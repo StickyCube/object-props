@@ -23,6 +23,23 @@
   };
 
   /**
+   * More advanced typeof function, distinguises array and null
+   * @param  {Any}      v value to test
+   * @return {String}     the kind of value
+   */
+  var kindof = function (v) {
+    if (!isValue(v)) {
+      return v === null ? 'null' : 'undefined';
+    }
+
+    if (v.constructor === Array) {
+      return 'array';
+    }
+
+    return typeof v;
+  };
+
+  /**
    * Test whether the current index of an iteration is the last
    * @param  {Number}  idx    The current index
    * @param  {Number}  length The length of the container
@@ -59,7 +76,7 @@
    * @param  {Any}    value    The default to apply if the target value does not
    *                           exist.
    *
-   * @return {Object}          returns the passed `context`.
+   * @return {Object}          returns the existing or ensured value.
    */
   ok.ensure = function (context, property, value) {
 
@@ -71,8 +88,7 @@
     return split(property, context, function (ctx, token, next, last) {
       // on the last iteration we set the default if it does not exist
       if (last) {
-        ctx[token] = isValue(next) ? next : value;
-        return context;
+        return ctx[token] = isValue(next) ? next : value;
       }
 
       // set the next property as an empty object if it does not exist
@@ -102,10 +118,8 @@
         if (useDefault) {
           return isValue(next) ? next : defaultValue;
         }
-
-        return isValue(next) ? next : {};
       }
-
+      return isValue(next) ? next : {};
     });
   };
 
@@ -130,26 +144,157 @@
 
       return ctx[token] = isValue(next) ? next : {};
     });
-  }
+  };
+
+  var Assertion = function (data) {
+    this._data = data;
+
+    this._functions().forEach(function (name) {
+      var old = this[name];
+
+      this[name] = function () {
+        var ret = old.apply(this, arguments);
+        return this._negate ? !ret : ret;
+      };
+
+    }, this);
+  };
+
+  Assertion.prototype = {
+    constructor: Assertion,
+    _data: null,
+    _negate: false,
+    _deep: false,
+
+    _functions: function () {
+      var
+        names = [],
+        name;
+
+      for (name in Assertion.prototype) {
+        if (!/^_/.test(name) && typeof Assertion.prototype[name] === 'function') {
+          names.push(name);
+        }
+      }
+
+      return names;
+    },
+
+    equal: function (value) {
+      return this._data === value;
+    },
+
+    truthy: function () {
+      return !!this._data;
+    },
+
+    falsy: function () {
+      return !this._data;
+    },
+
+    instanceof: function (ctor) {
+      return this._data instanceof ctor;
+    },
+
+    typeof: function (type) {
+      return typeof this._data === type;
+    },
+
+    kindof: function (type) {
+      return kindof(this._data) === type;
+    },
+
+    lt: function (v) {
+      return this._data < v;
+    },
+
+    lte: function (v) {
+      return this._data <= v;
+    },
+
+    gt: function (v) {
+      return this._data > v;
+    },
+
+    gte: function (v) {
+      return this._data >= v;
+    }
+   };
+
+  Object.defineProperty(Assertion.prototype, 'is', {
+    get: function () {
+      this._negate = false;
+      return this;
+    }
+  });
+
+  Object.defineProperty(Assertion.prototype, 'not', {
+    get: function () {
+      this._negate = true;
+      return this;
+    }
+  })
+
+  Object.defineProperty(Assertion.prototype, 'defined', {
+    get: function () {
+      return this._negate
+        ? this._data === void 0
+        : this._data !== void 0;
+    }
+  });
+
+  Object.defineProperty(Assertion.prototype, 'undefined', {
+    get: function () {
+      return !this.defined;
+    }
+  });
+
+  Object.defineProperty(Assertion.prototype, 'null', {
+    get: function () {
+      return this._negate
+        ? this._data !== null
+        : this._data === null;
+    }
+  });
+
+  Object.defineProperty(Assertion.prototype, 'value', {
+    get: function () {
+      return this._negate
+        ? !isValue(this._data)
+        : isValue(this._data);
+    }
+  });
+
+  ok.check = function (context, property) {
+    return new Assertion(ok.get(context, property));
+  };
 
   factory(ok);
-  
+
 })(function (package) {
-  var
-    root;
+  var root;
 
   if (typeof module !== 'undefined' && typeof module.exports === 'object') {
-    return module.exports = package;
+    if (typeof global !== 'undefined' && typeof global.window === 'object') {
+      // it's probably a node-webkit type app
+      root = global.window;
+    } else {
+      // looks like it's node, just export the package
+      return module.exports = package;
+    }
+  } else {
+    root = window;
   }
 
-  if (typeof window._ !== 'undefined') {
-    var old = window.ok;
+  if (typeof root.ok !== 'undefined') {
+    // add a noconflict method
+    var old = root.ok;
 
     package.noconflict = function () {
-      window.ok = old;
+      root.ok = old;
       return package;
     };
   }
 
-  window.ok = package;
+  root.ok = package;
 });

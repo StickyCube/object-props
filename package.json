@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "chai": "^3.4.0"
+    "chai": "~3.4.0"
   },
   "name": "object-props",
   "version": "0.0.0",
