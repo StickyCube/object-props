@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "chai": "^3.4.0"
+  },
+  "name": "object-props",
+  "version": "0.0.0",
+  "description": "An object utility library",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha --recursive tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/StickyCube/object-props.git"
+  },
+  "keywords": [
+    "object",
+    "properties",
+    "ensure",
+    "getproperty",
+    "setproperty",
+    "utility"
+  ],
+  "author": "stickycube",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StickyCube/object-props/issues"
+  },
+  "homepage": "https://github.com/StickyCube/object-props"
+}
