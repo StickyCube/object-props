@@ -1,0 +1,7 @@
+language: javascript
+
+before_script: npm install
+
+script:
+  - grunt build
+  - grunt test
