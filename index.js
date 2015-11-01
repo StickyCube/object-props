@@ -36,6 +36,10 @@
       return 'array';
     }
 
+    if (v.constructor.name) {
+      return v.constructor.name.toLowerCase();
+    }
+
     return typeof v;
   };
 
@@ -113,11 +117,22 @@
   ok.get = function (context, property, defaultValue) {
     var useDefault = arguments.length === 3;
 
+    if (!isValue(context)) {
+      return;
+    }
+
     return split(property, context, function (ctx, token, next, last) {
       if (last) {
-        if (useDefault) {
-          return isValue(next) ? next : defaultValue;
+
+        if (isValue(next)) {
+            return next;
         }
+
+        if (useDefault) {
+          return defaultValue;
+        }
+
+        return next;
       }
       return isValue(next) ? next : {};
     });
@@ -136,6 +151,10 @@
    * @return {[type]}              returns the passed in context
    */
   ok.set = function (context, property, value) {
+    if (!isValue(context)) {
+      context = {};
+    }
+
     return split(property, context, function (ctx, token, next, last) {
       if (last) {
         ctx[token] = value;
@@ -180,7 +199,7 @@
       return names;
     },
 
-    equal: function (value) {
+    equals: function (value) {
       return this._data === value;
     },
 
@@ -190,10 +209,6 @@
 
     falsy: function () {
       return !this._data;
-    },
-
-    instanceof: function (ctor) {
-      return this._data instanceof ctor;
     },
 
     typeof: function (type) {
@@ -266,12 +281,20 @@
   });
 
   ok.check = function (context, property) {
-    return new Assertion(ok.get(context, property));
+    var value;
+
+    if (arguments.length === 2) {
+      value = ok.get(context, property);
+    } else {
+      value = context;
+    }
+
+    return new Assertion(value);
   };
 
   factory(ok);
 
-})(function (package) {
+})(function (ok) {
   var root;
 
   if (typeof module !== 'undefined' && typeof module.exports === 'object') {
@@ -280,21 +303,21 @@
       root = global.window;
     } else {
       // looks like it's node, just export the package
-      return module.exports = package;
+      return module.exports = ok;
     }
   } else {
     root = window;
   }
 
-  if (typeof root.ok !== 'undefined') {
+  if (typeof root.ok !== 'undefined' && 'ok' in root) {
     // add a noconflict method
     var old = root.ok;
 
-    package.noconflict = function () {
+    ok.noconflict = function () {
       root.ok = old;
-      return package;
+      return ok;
     };
   }
 
-  root.ok = package;
+  root.ok = ok;
 });
