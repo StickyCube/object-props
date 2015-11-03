@@ -125,4 +125,42 @@ describe('set', function () {
     });
   });
 
+  describe('Nested properties', function () {
+    beforeEach(function () {
+      foo = { bar: { num: 123, str: 'abc', bool: false } };
+    });
+
+    it('Should overwrite a number value', function () {
+      set(foo, 'bar.num', 999);
+      actual = foo.bar.num;
+      expected = 999;
+
+      expect(actual).to.equal(expected);
+    });
+
+    it('Should overwrite a string value', function () {
+      set(foo, 'bar.str', 999);
+      actual = foo.bar.str;
+      expected = 999;
+
+      expect(actual).to.equal(expected);
+    });
+
+    it('Should overwrite a boolean value', function () {
+      set(foo, 'bar.bool', 999);
+      actual = foo.bar.bool;
+      expected = 999;
+
+      expect(actual).to.equal(expected);
+    });
+
+    it('Should create a property that does not exist', function () {
+      set(foo, 'fizz.buzz', 15);
+      actual = foo.fizz.buzz;
+      expected = 15;
+
+      expect(actual).to.equal(expected);
+    });
+  });
+
 });
