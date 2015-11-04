@@ -8,23 +8,45 @@ var
   mocha       = require('gulp-mocha'),
   coveralls   = require('gulp-coveralls'),
   rename      = require('gulp-rename'),
+  rimraf      = require('gulp-rimraf'),
   license     = require('gulp-license'),
   header      = require('gulp-header'),
   istanbul    = require('gulp-istanbul');
 
-gulp.task('pre-test', function () {
+gulp.task('pre-test-istanbul', function () {
   gulp
     .src(['./src/**/*.js'])
     .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('tests', ['pre-test'], function () {
+gulp.task('unit-test-node', ['pre-test'], function () {
   gulp
     .src(['./tests/**/*.js'])
     .pipe(mocha())
-    .pipe(istanbul.writeReports());
+    .pipe(istanbul.writeReports({
+      dir: './coverage'
+    }));
 });
+
+gulp.task('post-test-coverage', function () {
+  gulp
+    .src(['./coverage/**/lcov.info'])
+    .pipe(coveralls())
+});
+
+gulp.task('post-test-clean', function () {
+  gulp
+    .src(['./coverage'], { read: false })
+    .pipe(rimraf());
+});
+
+gulp.task('tests', [
+  'pre-test-istanbul',
+  'unit-test-node',
+  'post-test-coverage',
+  'post-test-clean'
+])
 
 gulp.task('build', ['tests'], function () {
   gulp
@@ -45,10 +67,4 @@ gulp.task('build', ['tests'], function () {
       '*/\n'
     ].join('\n'), { pkg: pkg }))
     .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('post-build', function () {
-  gulp
-    .src(['test/coverage/**/lcov.info'])
-    .pipe(coveralls());
 });

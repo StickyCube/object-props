@@ -1,6 +1,9 @@
 # ok.js
 > `ok.js` is a small object utility library for manipulating and testing object properties.
 
+[![Build Status](https://travis-ci.org/StickyCube/ok-js.svg?branch=master)](https://travis-ci.org/StickyCube/ok-js)
+[![Coverage Status](https://coveralls.io/repos/StickyCube/ok-js/badge.svg?branch=master&service=github)](https://coveralls.io/github/StickyCube/ok-js?branch=master)
+
 ## Installation
 `ok.js` is available for both node.js and browser.
 
