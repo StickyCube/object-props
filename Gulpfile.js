@@ -20,7 +20,7 @@ gulp.task('pre-test-istanbul', function () {
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('unit-test-node', ['pre-test'], function () {
+gulp.task('unit-test-node', function () {
   gulp
     .src(['./tests/**/*.js'])
     .pipe(mocha())
