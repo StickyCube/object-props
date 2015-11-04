@@ -6,6 +6,7 @@ var
   browserify  = require('gulp-browserify'),
   uglify      = require('gulp-uglify'),
   mocha       = require('gulp-mocha'),
+  coveralls   = require('gulp-coveralls'),
   rename      = require('gulp-rename'),
   license     = require('gulp-license'),
   header      = require('gulp-header'),
@@ -44,4 +45,10 @@ gulp.task('build', ['tests'], function () {
       '*/\n'
     ].join('\n'), { pkg: pkg }))
     .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('post-build', function () {
+  gulp
+    .src(['test/coverage/**/lcov.info'])
+    .pipe(coveralls());
 });

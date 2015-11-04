@@ -13,3 +13,6 @@ before_script:
 
 script:
   - gulp build
+
+after_script:
+  - gulp post-build
