@@ -34,6 +34,15 @@ describe('ensure', function () {
       expect(actual).to.equal(expected);
     });
 
+    it('Should return the context if it is defined', function () {
+      foo = 'abc';
+
+      actual = ensure(foo, 'def');
+      expected = 'abc';
+
+      expect(actual).to.equal(expected);
+    });
+
     it('Should throw when a property is specified and context is undefined', function () {
       foo = undefined;
 

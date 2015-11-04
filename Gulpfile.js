@@ -6,7 +6,6 @@ var
   browserify  = require('gulp-browserify'),
   uglify      = require('gulp-uglify'),
   mocha       = require('gulp-mocha'),
-  coveralls   = require('gulp-coveralls'),
   rename      = require('gulp-rename'),
   rimraf      = require('gulp-rimraf'),
   license     = require('gulp-license'),
@@ -29,12 +28,6 @@ gulp.task('unit-test-node', function () {
     }));
 });
 
-gulp.task('post-test-coverage', function () {
-  gulp
-    .src(['./coverage/**/lcov.info'])
-    .pipe(coveralls())
-});
-
 gulp.task('post-test-clean', function () {
   gulp
     .src(['./coverage'], { read: false })
@@ -43,9 +36,7 @@ gulp.task('post-test-clean', function () {
 
 gulp.task('tests', [
   'pre-test-istanbul',
-  'unit-test-node',
-  'post-test-coverage',
-  'post-test-clean'
+  'unit-test-node'
 ])
 
 gulp.task('build', ['tests'], function () {
