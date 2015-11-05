@@ -1,14 +1,6 @@
 'use strict';
 
-var options = {
-
-  /**
-   * pattern on which to split object property paths
-   * @type {String}
-   */
-  seperator: '.'
-
-};
+var config = require('./configuration');
 
 /**
  * Test wherther a reference is null or undefined
@@ -59,8 +51,10 @@ var isLast = function (idx, length) {
  *                    and whether the iteration is the last as arguments
  */
 module.exports.split = function (property, context, iterator) {
+  var seperator = config.get('seperator');
+
   return property
-    .split(options.seperator)
+    .split(seperator)
     .reduce(function (ctx, token, i, a) {
       return iterator(ctx, token, ctx[token], isLast(i, a.length));
     }, context);

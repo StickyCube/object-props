@@ -8,6 +8,8 @@ module.exports = {
 
   set:    require('./set'),
 
-  check:  require('./check')
+  check:  require('./check'),
+
+  config: require('./configuration')
 
 };

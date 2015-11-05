@@ -1,11 +1,12 @@
 # ok.js
-> `ok.js` is a small object utility library for manipulating and testing object properties.
 
 [![Build Status](https://travis-ci.org/StickyCube/ok-js.svg?branch=master)](https://travis-ci.org/StickyCube/ok-js)
 [![Coverage Status](https://coveralls.io/repos/StickyCube/ok-js/badge.svg?branch=master&service=github)](https://coveralls.io/github/StickyCube/ok-js?branch=master)
 
+> ok.js is a small object utility library for manipulating and testing object properties.
+
 ## Installation
-`ok.js` is available for both node.js and browser.
+ok.js is available for both node.js and browser.
 
 ```
 Through npm:
@@ -16,16 +17,7 @@ Through bower
   bower install ok-js
 ```
 
-Or [get the latest](https://github.com/StickyCube/object-props) straight from git.
-
-```javascript
-// in node, simply require
-var ok = require('ok-js');
-
-// In the browser, `ok` is available globally.
-// Use noconflict if you already have a global with the same name
-window._ = ok.noconflict();
-```
+Or build it yourself. Get the latest from git [here](https://github.com/StickyCube/object-props) and `gulp build` from the root directory.
 
 ## What does it do?
 I got sick of writing long, ugly lines of code to test and set defaults on nested object properties all the time, so i wrote this. I hope you find it useful.
@@ -47,7 +39,7 @@ this.object.should.exist = this.object.should.exist || [];
 var h = ((session || {}).user || {}).name || 'Spiderman';
 ```
 
-### At a glance
+##### At a glance
 
 ```javascript
 var make = { it: null };
@@ -63,73 +55,93 @@ ok.ensure(make, 'it.look.nice', true);
 
 ## API
 
-#### ensure(context, [path], value)
-Ensure a property exists at a given `path` within a given `context`. If the resolved value is either null or undefined then the given `value` will be set. If the given context is null or undefined, ensure will return a new object with this property set.
+#### ok.ensure(context, [path], value)
+Ensure a property exists at a given `path` within a given `context`.<br/> If the resolved property is either null or undefined then the given `value` will be set. <br/>If the given context is null or undefined, ensure will return a new object with this property set.
 
 - arguments
-  * `context`:`Object` - The context in which to ensure the property exists.
-  * `path`:`String` - An optional path to a property. To target nested properties, delimit with `'.'`.
-  * `value`:`Any` - the value to set.
+  * `context`: _Object_ - The context in which to ensure the property exists.
+  * `path`: _String_ - An optional path to a property. To target nested properties delimit with dots `.`.
+  * `value`: _Any_ - the value to set.
 
 
 - returns the given `context` or a new Object if context was null or undefined.
 
 
-#### get(context, path, [default])
-Get the property specified by `path` within the given `context`. If specified, the default will be returned only when get yields null or undefined.
+#### ok.get(context, path, [default])
+Get the property specified by `path` within the given `context`.<br/> The `default` will be returned, if specified, only when get yields null or undefined.
 
 - arguments
-  * `context`:`Object` - The context in which to find the property.
-  * `path`:`String` - The path to a property. To target nested properties, delimit with `'.'`.
-  * `default`:`Any` - An optional value to return when get yields null or undefined.
+  * `context`: _Object_ - The context in which to find the property.
+  * `path`: _String_ - The path to a property. To target nested properties delimit with dots `.`.
+  * `default`: _Any_ - An optional value to return when get yields null or undefined.
 
 - returns the resolved property or default value.
 
-#### set(context, path, value)
-Set the property specified by `path` within the given `context` to `value`. If context is null or undefined, this will return a new object.
+#### ok.set(context, path, value)
+Set the property specified by `path` within the given `context` to `value`.<br/>If context is null or undefined, set will return a new object.
 
 - arguments
-  * `context`:`Object` - The context in which to set the property.
-  * `path`:`String` - The path to a property. To target nested properties, delimit with `'.'`.
-  * `value`:`Any` - The value to set.
+  * `context`: _Object_ - The context in which to set the property.
+  * `path`: _String_ - The path to a property. To target nested properties delimit with dots `.`.
+  * `value`: _Any_ - The value to set.
 
 - returns the given `context` or a new Object if context was null or undefined.
 
 
-#### check(context, [path])
+#### ok.check(context, [path])
 Get an Assertion object which can be used to test the resolved property.
 
-Inspired by chaijs, the assertion supports `.is` and `.not` in conjunction with the following complete list of endpoints:
+Inspired by chaijs, the assertion supports chainable `.is` and `.not` getters to be used in conjunction with the following complete list of endpoints:
 
 ```javascript
-  var it = check(foo, 'bar.baz');
-
+  var it = ok.check(foo, 'bar.baz');
     // each of the following return a boolean
 
+    // use it with the following functions:
     it.is.truthy();
     it.is.falsy();
 
-    // using typeof operator
-    it.is.typeof('string');
-    // same as typeof but distinguises null and array
-    it.is.kindof('array');
+    it.is.typeof('string'); // typeof operator
+    it.is.kindof('array'); // same as typeof but distinguises null and array
 
-    it.equals(123);
-    it.is.gt(Infinity);
-    it.is.gte(9000);
-    it.is.lt(0);
-    it.is.lte(567);
+    it.equals(123); // ===
+    it.is.gt(Infinity); // >
+    it.is.gte(9000); // >=
+    it.is.lt(0); // <
+    it.is.lte(567); // <=
 
-    // !== undefined
-    it.is.defined;
-    // !== null
-    it.is.null;
-    // === undefined
-    it.is.undefined;
-    // != null
-    it.is.value;
+    // or these getters
+    it.is.undefined; // === undefined
+    it.is.defined; // !== undefined
+    it.is.null; // === null
+    it.is.value; // != null
+
+    // NOTE: negate the assertion using `.not` before the endpoint.
+    // NOTE: `.is` is merely aesthetic, and can be safely omitted.
 ```
 
-# TODO
-* finish tests
-* finish readme
+#### ok.config()
+config accepts either:
+  * A single argument - an `Object` of key-value pairs to set multiple config options.
+  * Two arguments - a `String` key and `Any` value to set a single config option.
+  * A single argument - a `String` identifying a config value to get.
+
+#### options
+
+##### options.seperator [default = `'.'`]
+A `String` to use as the separating character/pattern between object keys in the `path` parameter of `ok.ensure`, `ok.get`, `ok.set` and `ok.check`.
+
+```javascript
+// by default
+kkthxbye = ok.get(foo, 'kk.thx.bye');
+
+// using a different seperator
+ok.config('seperator', '_');
+kkthxbye = ok.get(foo, 'kk_thx_bye');
+```
+
+## Issues and Requests
+Please submit any issues or feature requests to the repository's github [issue tracker](https://github.com/StickyCube/ok-js/issues).
+
+## Version History
+  - v0.1.0 - Initial release
