@@ -103,6 +103,7 @@ Inspired by chaijs, the assertion supports chainable `.is` and `.not` getters to
 
     it.is.typeof('string'); // typeof operator
     it.is.kindof('array'); // same as typeof but distinguises null and array
+    it.is.instanceof(String);
 
     it.equals(123); // ===
     it.is.gt(Infinity); // >
@@ -115,6 +116,7 @@ Inspired by chaijs, the assertion supports chainable `.is` and `.not` getters to
     it.is.defined; // !== undefined
     it.is.null; // === null
     it.is.value; // != null
+    it.is.primitive; // null|undefined|String|Boolean|Number
 
     // NOTE: negate the assertion using `.not` before the endpoint.
     // NOTE: `.is` is merely aesthetic, and can be safely omitted.
@@ -145,3 +147,4 @@ Please submit any issues or feature requests to the repository's github [issue t
 
 ## Version History
   - v0.1.0 - Initial release
+  - v0.2.0 - Added `instanceof` and `.primitive` to check API

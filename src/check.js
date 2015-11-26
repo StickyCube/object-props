@@ -58,6 +58,10 @@ Assertion.prototype = {
     return utils.kindof(this._data) === type;
   },
 
+  instanceof: function (Klass) {
+    return this._data instanceof Klass;
+  },
+
   lt: function (v) {
     return this._data < v;
   },
@@ -116,6 +120,20 @@ Object.defineProperty(Assertion.prototype, 'value', {
     return this._negate
       ? !utils.isValue(this._data)
       : utils.isValue(this._data);
+  }
+});
+
+Object.defineProperty(Assertion.prototype, 'primitive', {
+  get: function () {
+    var result;
+
+    if (!utils.isValue(this._data)) {
+      return !this._negate;
+    }
+
+    result = this.typeof('string') || this.typeof('number') || this.typeof('boolean');
+
+    return this._negate ? !result : result;
   }
 });
 
