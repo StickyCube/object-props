@@ -148,4 +148,4 @@ Please submit any issues or feature requests to the repository's github [issue t
 ## Version History
   - v0.1.0 - Initial release
   - v0.2.0 - Added `instanceof` and `.primitive` to check API
-  - v0.2.1 - Fixed an issue with get when no property is given
+  - v0.2.2 - Fixed an issue with ok.get when property is null or undefined

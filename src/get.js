@@ -18,17 +18,16 @@ var utils = require('./utils');
 module.exports = function (context, property, defaultValue) {
   var useDefault = arguments.length === 3;
 
-  if (arguments.length === 1) {
+  if (!utils.isValue(context)) {
     return context;
   }
 
-  if (!utils.isValue(context)) {
-    return;
+  if (!utils.isValue(property)) {
+    return context;
   }
 
   return utils.split(property, context, function (ctx, token, next, last) {
     if (last) {
-
       if (utils.isValue(next)) {
           return next;
       }

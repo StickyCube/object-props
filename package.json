@@ -13,7 +13,7 @@
     "gulp-rimraf": "~0.2.0"
   },
   "name": "ok-js",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "An object utility library",
   "main": "index.js",
   "directories": {

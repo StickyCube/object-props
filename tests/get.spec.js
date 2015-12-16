@@ -28,7 +28,7 @@ describe('get', function () {
     });
 
     it('Should not throw when context is null', function () {
-      expected = undefined;
+      expected = null;
 
       expect(function () {
           actual = get(null, 'bar.baz');
