@@ -18,6 +18,10 @@ var utils = require('./utils');
 module.exports = function (context, property, defaultValue) {
   var useDefault = arguments.length === 3;
 
+  if (arguments.length === 1) {
+    return context;
+  }
+
   if (!utils.isValue(context)) {
     return;
   }
